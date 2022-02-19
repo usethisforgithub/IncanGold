@@ -29,12 +29,12 @@ public class Server{
         //TODO: implement game start feature
         ServerSocket serverSocket = new ServerSocket(43210);
         Socket socket = serverSocket.accept();
-        //Socket socket2 = serverSocket.accept();
+        Socket socket2 = serverSocket.accept();
         
 
         //connect all clients
         players.add(new Player(new SocketClientHandler(this, socket)));
-        //players.add(new Player(new SocketClientHandler(this, socket2)));
+        players.add(new Player(new SocketClientHandler(this, socket2)));
         serverSocket.close();
 
 
