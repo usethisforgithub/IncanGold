@@ -73,4 +73,17 @@ public class Deck{
 
         return false;
     }
+
+    public void display(){
+        System.out.println("Cards in deck:");
+        for(Card card : questDeck){
+            System.out.print(card + ", ");
+        }
+        System.out.println();
+        System.out.println("Cards played:");
+        for(Card card : flippedCards){
+            System.out.print(card + ", ");
+        }
+        System.out.println();
+    }
 }

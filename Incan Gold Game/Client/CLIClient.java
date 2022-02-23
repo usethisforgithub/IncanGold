@@ -8,6 +8,9 @@ import java.util.ArrayList;
 
 public class CLIClient {
     public static void main(String[] args) throws IOException{
+        //TODO: receive max count from server with other config data
+        final int MAX_ROUND = 5;
+
         int playerId;
         Socket socket = new Socket("127.0.0.1", 43210);
         PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -22,6 +25,10 @@ public class CLIClient {
         System.out.println("Hello from client!");
 
         boolean gameGoing = true;
+        boolean endRoundByHazard = false;
+
+        int roundCount = 0;
+
         while(gameGoing){
            String op = br.readLine();
            switch(op){
@@ -50,10 +57,9 @@ public class CLIClient {
                case "PLAYER_LEFT_ROUND":
                pw.println("OK");
                pw.flush();
-               playerId = Integer.parseInt(br.readLine());
+               players.get(Integer.parseInt(br.readLine())).stillIn = false;
                pw.println("OK");
                pw.flush();
-
                break;
 
                case "CARD_FLIPPED":
@@ -62,6 +68,9 @@ public class CLIClient {
 
                Card flippedCard = Card.valueOf(br.readLine());
                System.out.println("Card was flipped: " + flippedCard);
+               if(Card.isHazard(flippedCard) && (cardsFlipped.indexOf(flippedCard) != cardsFlipped.lastIndexOf(flippedCard))){
+                   endRoundByHazard = true;
+               }
                cardsFlipped.add(flippedCard);
                pw.println("OK");
                pw.flush();
@@ -85,6 +94,28 @@ public class CLIClient {
                System.out.println();
                break;
            }
+
+           boolean endRoundByLeave = true;
+            for(Player player : players){
+                if(player.stillIn){
+                    endRoundByLeave = false;
+                }
+            }
+            if(endRoundByHazard || endRoundByLeave){
+                System.out.println("Round " + roundCount + " ended");
+                roundCount++;
+                endRoundByHazard = false;
+                for(Player player : players){
+                    player.stillIn = true;
+                }
+
+                if(roundCount < MAX_ROUND){
+                    System.out.println("Beginning round " + roundCount);
+                }else{
+                    gameGoing = false;
+                    System.out.println("Game has ended!");
+                }
+            }
         }
 
         socket.close();

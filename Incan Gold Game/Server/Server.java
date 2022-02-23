@@ -29,12 +29,12 @@ public class Server{
         //TODO: implement game start feature
         ServerSocket serverSocket = new ServerSocket(43210);
         Socket socket = serverSocket.accept();
-        Socket socket2 = serverSocket.accept();
+        //Socket socket2 = serverSocket.accept();
         
 
         //connect all clients
         players.add(new Player(new SocketClientHandler(this, socket)));
-        players.add(new Player(new SocketClientHandler(this, socket2)));
+        //players.add(new Player(new SocketClientHandler(this, socket2)));
         serverSocket.close();
 
 
@@ -120,6 +120,7 @@ public class Server{
         for(Card card : deck.flippedCards){
             deck.insert(card);
         }
+        deck.flippedCards.clear();
         for(int i = 0; i < artifactStash; i++){
             deck.insert(Card.ARTIFACT);
         }
@@ -133,6 +134,7 @@ public class Server{
                 deck.insert(flippedCard);
             }
         }
+        deck.flippedCards.clear();
         for(int i = 0; i < artifactStash; i++){
             deck.insert(Card.ARTIFACT);
         }
@@ -208,6 +210,8 @@ public class Server{
             System.out.println();
         }
         System.out.println();
+        System.out.println();
+        deck.display();
     }
 
     //figures out the total treasure to distribute, distributes it, or adds artifact to stash
